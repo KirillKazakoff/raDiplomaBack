@@ -22,8 +22,12 @@
                 "avalible": true
             },
             {
-                "size": "15 US",
+                "size": "14 US",
                 "avalible": false
+            },
+            {
+                "size": "15 US",
+                "avalible": true
             }
         ]
     },

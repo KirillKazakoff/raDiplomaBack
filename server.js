@@ -32,8 +32,8 @@ const fortune = (ctx, body = null, status = 200) => {
 		setTimeout(() => {
 			// Uncomment for error generation
 			// if (Math.random() > 0.8) {
-			//     reject(new Error('Something bad happened'));
-			//     return;
+			// 	reject(new Error('Something bad happened'));
+			// 	return;
 			// }
 
 			ctx.response.status = status;
@@ -45,6 +45,44 @@ const fortune = (ctx, body = null, status = 200) => {
 
 const app = new Koa();
 app.use(cors());
+
+//here pasted
+// app.use(async (ctx, next) => {
+// 	const origin = ctx.request.get('Origin');
+// 	if (!origin) {
+// 		return await next();
+// 	}
+
+// 	const headers = { 'Access-Control-Allow-Origin': '*' };
+
+// 	if (ctx.request.method !== 'OPTIONS') {
+// 		ctx.response.set({ ...headers });
+// 		try {
+// 			return await next();
+// 		} catch (e) {
+// 			e.headers = { ...e.headers, ...headers };
+// 			throw e;
+// 		}
+// 	}
+
+// 	if (ctx.request.get('Access-Control-Request-Method')) {
+// 		ctx.response.set({
+// 			...headers,
+// 			'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH',
+// 		});
+
+// 		if (ctx.request.get('Access-Control-Request-Headers')) {
+// 			ctx.response.set(
+// 				'Access-Control-Allow-Headers',
+// 				ctx.request.get('Access-Control-Request-Headers')
+// 			);
+// 		}
+
+// 		ctx.response.status = 204;
+// 	}
+// });
+//here pasted
+
 app.use(
 	koaBody({
 		json: true,
@@ -85,6 +123,8 @@ router.get('/api/items', async (ctx, next) => {
 });
 
 router.get('/api/items/:id', async (ctx, next) => {
+	console.log(ctx.params);
+
 	const id = Number(ctx.params.id);
 	const item = items.find((o) => o.id === id);
 	if (item === undefined) {
@@ -125,12 +165,15 @@ router.post('/api/order', async (ctx, next) => {
 		return fortune(ctx, 'Bad Request', 400);
 	}
 
+	console.log(items);
 	return fortune(ctx, null, 204);
 });
 
 app.use(router.routes());
-app.use(router.allowedMethods());
+// app.use(router.allowedMethods());
 
 const port = process.env.PORT || 7070;
 const server = http.createServer(app.callback());
+
+console.log('hello');
 server.listen(port);
